@@ -58,10 +58,32 @@ const SettingsStack = createStackNavigator(
     },
   }
 );
+
+const ProfileStack = createStackNavigator(
+  {
+    //Defination of Navigaton from setting screen
+    Profile: { screen: ProfileScreen },
+    Settings: { screen: SettingsScreen },
+    Details: { screen: DetailsScreen },
+  },
+  {
+    defaultNavigationOptions: {
+      //Header customization of the perticular Screen
+      headerStyle: {
+        backgroundColor: '#42f44b',
+      },
+      headerTintColor: '#FFFFFF',
+      title: 'Profile',
+      //Header title
+    },
+  }
+);
+
 const App = createBottomTabNavigator(
   {
     Home: { screen: HomeStack },
     Settings: { screen: SettingsStack },
+    Profile: { screen: ProfileStack },
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -72,7 +94,11 @@ const App = createBottomTabNavigator(
         if (routeName === 'Home') {
           iconName = `ios-information-circle${focused ? '' : '-outline'}`;
         } else if (routeName === 'Settings') {
-          iconName = `ios-checkmark-circle${focused ? '' : '-outline'}`;
+          iconName = `ios-settings${focused ? '' : ''}`;
+        }
+
+        else if (routeName === 'Profile') {
+          iconName = `ios-person${focused ? '' : ''}`;
         }
         return <IconComponent name={iconName} size={25} color={tintColor} />;
       },

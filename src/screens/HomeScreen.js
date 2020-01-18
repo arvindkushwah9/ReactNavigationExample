@@ -22,6 +22,11 @@ export default class HomeScreen extends React.Component {
             onPress={() => this.props.navigation.navigate('Details')}>
             <Text>Open Details Screen</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.props.navigation.navigate('Login')}>
+            <Text>Login</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

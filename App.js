@@ -21,11 +21,32 @@ import HomeScreen from './src/screens/HomeScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import DetailsScreen from './src/screens/DetailsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import Login from './src/Auth/Login';
+import Registration from './src/Auth/Registration';
+import rootReducer from './src/reducers/index.js';
+import thunk from 'redux-thunk'
+import { Provider } from 'react-redux'
+import FlashMessage from "react-native-flash-message";
+
+import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
+
+let composeEnhancers = compose;
+
+if (__DEV__) {
+    composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+}
+
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
+
+
+
 const HomeStack = createStackNavigator(
   {
     //Defination of Navigaton from home screen
     Home: { screen: HomeScreen },
     Details: { screen: DetailsScreen },
+    Login: { screen: Login },
+    Registration: { screen: Registration },
   },
   {
     defaultNavigationOptions: {
@@ -79,7 +100,7 @@ const ProfileStack = createStackNavigator(
   }
 );
 
-const App = createBottomTabNavigator(
+const RootStack = createBottomTabNavigator(
   {
     Home: { screen: HomeStack },
     Settings: { screen: SettingsStack },
@@ -109,4 +130,28 @@ const App = createBottomTabNavigator(
     },
   }
 );
-export default createAppContainer(App);
+
+const Navigation = createAppContainer(RootStack);
+
+const LandingNavigation = createAppContainer(HomeStack);
+
+
+// Render the app container component with the provider around it
+export default class App extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <Provider store={store}>
+          <Navigation />
+          {/*<LandingNavigation />*/}
+
+          <View ref={"otherView1"} />
+          <View ref={"otherView2"} />
+          <View ref={"otherView3"} />
+          <FlashMessage position="top" /> 
+        </Provider>
+      </View>
+
+    );
+  }
+}

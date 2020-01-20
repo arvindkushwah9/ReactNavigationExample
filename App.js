@@ -27,6 +27,8 @@ import rootReducer from './src/reducers/index.js';
 import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 import FlashMessage from "react-native-flash-message";
+import Storage from './src/helpers/storage';
+import { isSignedIn } from './src/helpers/storage';
 
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 
@@ -138,20 +140,56 @@ const LandingNavigation = createAppContainer(HomeStack);
 
 // Render the app container component with the provider around it
 export default class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      signedIn: false,
+      checkedSignIn: false
+    };
+  }
+
+  componentDidMount() {
+    isSignedIn()
+      .then(res => this.setState({ signedIn: res, checkedSignIn: true }))
+      .catch(err => alert("An error occurred"));
+  }
+
   render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <Provider store={store}>
-          <Navigation />
-          {/*<LandingNavigation />*/}
+    const { checkedSignIn, signedIn } = this.state;
 
-          <View ref={"otherView1"} />
-          <View ref={"otherView2"} />
-          <View ref={"otherView3"} />
-          <FlashMessage position="top" /> 
-        </Provider>
-      </View>
+    // If we haven't checked AsyncStorage yet, don't render anything (better ways to do this)
+    if (!checkedSignIn) {
+      return null;
+    }
 
-    );
+    if (signedIn) {
+       return (
+          <View style={{ flex: 1 }}>
+            <Provider store={store}>
+              <Navigation />
+              <View ref={"otherView1"} />
+              <View ref={"otherView2"} />
+              <View ref={"otherView3"} />
+              <FlashMessage position="top" /> 
+            </Provider>
+          </View>
+
+        );
+    } else {
+       return (
+        <View style={{ flex: 1 }}>
+          <Provider store={store}>
+            <LandingNavigation />
+            <View ref={"otherView1"} />
+            <View ref={"otherView2"} />
+            <View ref={"otherView3"} />
+            <FlashMessage position="top" /> 
+          </Provider>
+        </View>
+      );
+    }
+     
   }
 }

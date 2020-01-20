@@ -1,7 +1,8 @@
 import { BASE_URL, LOCAL_URL } from '../helpers/globalPaths'
 import { showMessage, hideMessage } from "react-native-flash-message";
 import Interceptor from '../helpers/interceptor'
-
+import Storage from '../helpers/storage'
+import { NavigationActions } from 'react-navigation'
 
 export const emailChanged = () => {
   return {
@@ -76,19 +77,21 @@ export const loginUser = (params) => {
             })
           }
           else {
-           console.log('SUCCESS!!')
-          showMessage({
-            message: "SUCCESS!",
-            description: data.message,
-            type: "success",
-          });
-          
-          dispatch({
-            type: 'LOGIN_USER_SUCCESS',
-            payload: { data: data, response: response },
-            // history.push("/Home")
-          })
-        }
+            console.log('SUCCESS!!')
+            showMessage({
+              message: "SUCCESS!",
+              description: data.message,
+              type: "success",
+            });
+            Storage.setItem('user', data.data);
+            dispatch({
+              type: 'LOGIN_USER_SUCCESS',
+              payload: { data: data, response: response },
+              // history.push("/Home")
+            })
+            console.log("Go to new screen")
+
+          }
         })
       }
     })
@@ -191,6 +194,7 @@ export const logoutUser = ({ access_token, uid, client }) => {
           description: "Log out successfully!",
           type: "success",
         });
+        Storage.removeItem('user');
       })
       .catch(error => {
         console.log(error)

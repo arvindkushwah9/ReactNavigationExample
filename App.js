@@ -29,6 +29,7 @@ import { Provider } from 'react-redux'
 import FlashMessage from "react-native-flash-message";
 import Storage from './src/helpers/storage';
 import { isSignedIn } from './src/helpers/storage';
+import NavigationService from './src/helpers/NavigationService';
 
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 
@@ -168,7 +169,11 @@ export default class App extends React.Component {
        return (
           <View style={{ flex: 1 }}>
             <Provider store={store}>
-              <Navigation />
+              <Navigation
+                ref={navigatorRef => {
+                  NavigationService.setTopLevelNavigator(navigatorRef);
+                }}
+               />
               <View ref={"otherView1"} />
               <View ref={"otherView2"} />
               <View ref={"otherView3"} />
@@ -181,7 +186,11 @@ export default class App extends React.Component {
        return (
         <View style={{ flex: 1 }}>
           <Provider store={store}>
-            <LandingNavigation />
+            <LandingNavigation
+              ref={navigatorRef => {
+                  NavigationService.setTopLevelNavigator(navigatorRef);
+                }}
+             />
             <View ref={"otherView1"} />
             <View ref={"otherView2"} />
             <View ref={"otherView3"} />

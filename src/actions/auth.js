@@ -3,6 +3,7 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import Interceptor from '../helpers/interceptor'
 import Storage from '../helpers/storage'
 import { NavigationActions } from 'react-navigation'
+import NavigationService from '../helpers/NavigationService';
 
 export const emailChanged = () => {
   return {
@@ -89,8 +90,7 @@ export const loginUser = (params) => {
               payload: { data: data, response: response },
               // history.push("/Home")
             })
-            console.log("Go to new screen")
-
+            NavigationService.navigate('Home', { userName: 'Arvind' });
           }
         })
       }
@@ -152,12 +152,14 @@ export const signupUser = (params) => {
             description: data.message,
             type: "success",
           });
-          
+          Storage.setItem('user', data.data);
           dispatch({
             type: 'SIGNUP_USER_SUCCESS',
             payload: { data: data, response: response },
             // history.push("/Home")
           })
+         NavigationService.navigate('Home', { userName: 'Arvind' });
+
         }
         })
       }
